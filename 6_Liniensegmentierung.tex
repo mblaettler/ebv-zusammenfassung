@@ -1,0 +1,59 @@
+\section{Liniensegmentierung und Merkmalsextraktion}
+Die Liniensegmentierung ist ein Spezialfall der normalen Segmentierung.\\
+Die Kantendetektion nach Prewitt und Sobel liefern oft ungenügende Ergebnisse:
+\begin{enumerate}
+    \item Die Kanten sind in der Regel deutlich breiter als ein Pixel (unnötige Redundanz)
+    \item Die Wahl eines globalen Schwellwerts ergibt nicht in allen Bildbereichen eine zufriedenstellende Resultate. Kanten treten oft zu häufig auf oder sie werden erst gar nicht detektiert. Auch ist der Schwellwert manuell.
+    \item Zusammengehörende Kanten sind oft, vor allem bei hohen Schwellwerten, unterbrochen.
+\end{enumerate}
+
+\subsection{Canny-Algorithmus}
+Ein sehr allgemeiner Formalismus, welcher die obigen Probleme löst (mit Ausnahme der Schwellwertwahl) ist der sogenannte Canny Algorithmus.\\
+Die Schritte des Canny-Algorithmus:
+\begin{enumerate}
+    \item \textbf{Glättung:}\\
+    Glättung des Bildes mittels eines Gauss Filters.
+    \item \textbf{Kantenfilter:}\\
+    Anwendung eines Standard Kantenfilters (Sobel, Prewitt) zur Bestimmung des Betrags und der Richtung des Gradienten in jedem Bildpunkt.
+    \item \textbf{Bestimmen der lokalen Maxima:}\\
+    Basierend auf der Richtung des Gradienten wird für jeden Bildpunkt ermittelt, ob es sich um ein lokales Maximum handelt. Hierzu wird die Änderung der Grauwerte entlang der Richtung des Gradienten betrachtet und das Pixel nur dann selektiert, wenn es einen Gradienten Betrag grösser als die Nachbarpixel hat.
+    \item \textbf{Kantenextraktion:}\\
+    Hier werden die eigentlichen Kanten selektiert. Dafür wird ein manueller Schwellwert für den Betrag des Gradienten gesetzt. Wird ein Pixel gefunden, dass diesen Schwellwert überschreitet, werden alle Pixel welche diesem lokalen Maximum folgen und einem unteren Sollwert nicht unterschreiten zur Kante hinzugefügt.\\
+    Dies ermöglicht eine gute Reaktion auf Kontrastschwankungen.
+\end{enumerate}
+\begin{lstlisting}
+%upper and lower threshold for edge detection (relative to max gradient
+%value)
+Threshold = [0.0 0.05];
+%width of Gaussian
+Sigma = 1;
+%apply a certain threshold
+[EdgeCanny, Threshold] = edge(Image,'canny', Threshold, Sigma);
+\end{lstlisting}
+
+\subsection{Hough-Transformation}
+Einen Punkt/Linie kann auch durch einen Winkel und einen Betrag beschrieben werden (siehe Vektoren, komplexe Zahlen). Bei der Hugh-Transformation wird beim differenzierten Bild jeder Pixel über einen Winkel und Betrag beschrieben. So können zusammenhängende Punkte/Linien ermittelt werden.
+\begin{lstlisting}
+% Detect the edges, the result is a binary image
+EdgeCanny = edge(Image, 'canny', [0 0.1], 1);
+
+% Hough transformation, calculate the accumulator Hough
+[Hough, Alpha, Rho] = hough(EdgeCanny,'RhoResolution', 2,'Theta',-90:2:89.5);
+
+% Find at most 5 peaks with threshold 15 and minimim distance of 15, 15
+% pixel
+NumPeaks = 5;
+HoughPeaks = houghpeaks(Hough, NumPeaks,'Threshold',5,'NHoodSize',[15,15]);
+
+% Find the lines that correspond to the peaks; fill gabs of 15 pixel and
+% suppress all (merged lines) that have a length less than 30 pixel
+Lines = houghlines(EdgeCanny, Alpha, Rho, HoughPeaks, 'FillGap', 15, 'MinLength', 50);
+\end{lstlisting}
+
+\subsubsection{Prüfen ob Pixel links oder rechts einer Linie liegt}
+\begin{lstlisting}
+rho_calc = X * cosd(theta) + Y * sind(theta);
+if rho_calc > rho
+    %Pixel (X,Y) is more right than (rho, theta)
+end
+\end{lstlisting}

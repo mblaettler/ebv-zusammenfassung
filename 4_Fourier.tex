@@ -1,0 +1,81 @@
+\section{Fourier-Transformation}
+Die Furier-Transformation erlaubt, ein beliebiges Signal in eine Summe von n Sinussignale zu zerlegen.\\
+Einige wichtige Eigenheiten sind:
+\begin{itemize}
+    \item Das Frequenzspektrum einer aperiodischen Funktion ist kontinuierlich im Intervall $]-\infty , +\infty [$
+    \item Das Frequenzspektrum einer periodischen Funktion ist diskret.
+\end{itemize}
+Da es sich bei Bildern um zweidimensionale Funktionen handelt, wird bei diesen die zweidimensionale Fourier-Transformation verwendet.\\
+Definition und Rechenregeln: Skript S. 53.
+\subsection{2D Diskrete Fourier Transformation (DFT)}
+Die zweidimensionale DFT ist das Produkt der beiden eindimensionalen DFTs.
+\begin{lstlisting}
+%this is the image size
+SizeXImage = 150;
+SizeYImage = 150;
+
+%we want to choose power of 2 and have image symmetric
+SizeFFT = max(2^ceil(log(SizeXImage)/log(2)), 2^ceil(log(SizeYImage)/log(2)));
+%calculate DFT (keep size of image)
+Image_FFT = fft2(Image, SizeFFT, SizeFFT);
+\end{lstlisting}
+
+\subsubsection{Berechnen der Inversen 2D DFT}
+\begin{lstlisting}
+%caluclate the inverse fft an plot
+Inv_FFT = abs(ifft2(Image_FFT_Mask));
+\end{lstlisting}
+
+\subsubsection{Mitteln des Spektrums in Matlab}
+Zur Darstellung ist es oft besser, die Spektrumswerte von 0Hz in die Mitte zu verschieben. Dafür kann der Befehl \lstinline|fftshift| verwendet werden.
+
+\subsection{Periodische Strukturen}
+Auch die 2D DFT kann verwendet werden, um periodische Strukturen zu finden.
+Da ein Bild aber nicht periodisch ist (Ränder), enthält die 2D DFT oft unerwünschte Artefakte. Diese können durch eine künstliche ''Periodisierung'' eliminiert werden.\\
+Die einfachste Möglichkeit bietet die Anwendung einer Fensterfunktion (engl. Window Function) welche zum Rand des Bild stetig gegen Null abfällt. Ein bekanntes solches Filter ist das \textbf{Hann-Filter}.
+\begin{equation}
+w_n=\frac{1}{2}*(1-\cos{\frac{2*\pi *n}{N-1}})
+\end{equation}
+\begin{lstlisting}
+%apply Hanning window
+Hann = hann(ImgS(1))*hann(ImgS(2))';
+Image_FFT_Ham = fft2(double(Image).*Hann);
+\end{lstlisting}
+
+\subsection{Unterdrückung periodischer Strukturen}
+Periodische Strukturen/Störungen können in einem Bild durch ein \textbf{Notch-Filter} eliminiert werden.
+\begin{lstlisting}
+%use imtool to find the positions of the frequencies
+%%imtool(log(abs(fftshift(Image_FFT))),[0 log(sum(MaxVal))]);
+NotchPos = [107 102; 95 143;116 170; 151 160; 165 114; 143 90; 185 140; 70 118];
+
+%apply the filter 
+Filter  = NotchFilter( size(Image_FFT), NotchPos, 6*ones(1,size(NotchPos, 1)) );
+
+%shortcut
+ImgS = size(Image);
+
+%do the inverse fft
+ImageIfft = abs(ifft2(Image_FFT.*fftshift(Filter)));
+%chose only the relevant part
+ImageFilt = ImageIfft(1:ImgS(1), 1:ImgS(2));
+\end{lstlisting}
+
+\subsection{Alisaing}
+Aliasing Artefakte werden häufig durch das Dezimieren (engl. Downsampling) von periodischen Strukturen erzeugt. Durch einen Glättungsfilter können diese stark reduziert werden.
+\begin{lstlisting}
+DownSampling = 5;   % Downsampling-Faktor
+
+%apply anti aliasing filter
+Mask = fspecial('average', 2*DownSampling);
+%Mask = fspecial('gaussian', 10*DownSampling, 0.5*DownSampling);
+
+%first apply filter
+ImageDecimate = imfilter(Image,Mask);
+%do sampling
+ImageDecimate = ImageDecimate(1:DownSampling:end, 1:DownSampling:end);
+\end{lstlisting}
+
+\subsection{Lineare Filter und DFFT}
+Eine Faltung zweier Funktionen im Ortsraum entspricht einer Multiplikation der dazugehörigen DFTs im Ortsfrequenzraum.\\
+So können mehrere Filter zusammengefasst werden.

@@ -1,0 +1,106 @@
+\section{Segmentierung und Merkmalsextraktion}
+Unter der Segmentierung eines Bildes versteht man die Zusammenfassung benachbarter Pixel in zusammenhängende Regionen (sog. ,,Regions of Intrest'', ROI).\\
+Dafür wird aber ein binäres Bild benötigt, dies kann über eine Schwellwertoperation ermittelt werden.
+
+\subsection{Automatische Schwellwertbestimmung}
+Oft wird ein fixer Schwellwert zu ungenügenden Ergebnissen führen. Aus diesem Grund kann die bekannte Methode von \textbf{Otsu} verwendet werden, um den Schwellwert automatisch zu ermitteln. Diese basiert auf folgender Idee:\\
+Es wird angenommen, dass das Bild in zwei Klassen von Pixel (mit relativ homogenen Grauwerten) aufgeteilt wird. Die Idee von Otsu ist nun, dass die Verteilung der Grauwerte in den beiden Klassen durch den Schwellwert $K$ derart optimiert wird, dass die Varianzen innerhalb der Klassen möglichst klein sind.\\
+Mathematisch:
+\begin{align*}
+\omega_0 = \sum_{g=0}^{K}p_I(g)\\
+\omega_1 = \sum_{g=K+1}^{255}p_I(g)\\
+\mu_0 = \frac{1}{\omega_0}\sum_{g=0}^{K}p_I(g)*g\\
+\mu_1 = \frac{1}{\omega_1}\sum_{g=K+1}^{255}p_I(g)*g\\
+\sigma^2_0 = \frac{1}{\omega_0}\sum_{g=0}^{K}p_I(g)*(g-\mu_0)^2\\
+\sigma^2_1 = \frac{1}{\omega_1}\sum_{g=K+1}^{255}p_I(g)*(g-\mu_1)^2\\
+\\
+\omega_W^2 = \omega_0 * \sigma_0^2 + \omega_1 * \sigma_1^2
+\end{align*}
+Wobei:
+\begin{description}
+    \item[$\omega_n$] Wahrscheinlichkeit für Auftreten von Klasse $C_n$
+    \item[$\mu_n$] Mittelwert der Klasse $C_n$
+    \item[$\sigma_n$] Varianz der Klasse $C_n$
+    \item[$\sigma_W$] ''Intra-Klassen'' Varianz
+\end{description}
+Der optionale Schwellwert ist nun:
+\begin{equation}
+K_{opt}=argmin(\sigma_W)
+\end{equation}
+\begin{lstlisting}
+%determine image histogram
+[Hist, Vals]=imhist(Image);
+%normalize it
+Hist = Hist/sum(Hist);
+%define mean
+Mean = Hist.*[0:255]';
+
+%apply Otsu's method
+Thresh = [];
+%loop over grey values
+for Ind = 1:255
+    %proability for class 0
+    w0 = sum(Hist(1:Ind));
+    %proability for class 1
+    w1 = sum(Hist(Ind+1:end));
+    %mean for class 0
+    m0 = sum(Mean(1:Ind))/w0;
+    %mean for class 1
+    m1 = sum(Mean(Ind+1:end))/w1;
+    %store the intra-class probability for this threshold
+    Thresh = [Thresh, w0*w1*(m0-m1)^2];
+end
+
+%find the maximum value
+[MaxThresh, MaxVal]=max(Thresh);
+%have to subtract one because we used the index of [0 255]
+Threshold = MaxVal-1;
+\end{lstlisting}
+Oder mit den Matlabeigenen Otsu Funktion:
+\begin{lstlisting}
+[counts,x] = imhist(I,16);
+T = otsuthresh(counts);
+BW = imbinarize(I,T);
+\end{lstlisting}
+\subsubsection{Segmentierung bei nicht globalen Schwellwert}
+Das Otsu Verfahren funktioniert aber nur, wenn ein globaler (d.h. für das gesamte Bild konstanter) Schwellwert existiert.\\
+Falls dies nicht der Fall sein sollte, gibt es eine Möglichkeit vor der Segmentierung die Grundhelligkeit des Bildes zu extrahieren und vom Originalbild zu subtrahieren.
+\begin{lstlisting}
+%apply a smoothing filter (we have to know the approximate size of
+%forground objects)
+Mask = fspecial('gaussian', 40, 25);
+
+%first apply filter
+ImageFilt = imfilter(Image, Mask, 'symmetric'); %choose symmetric boundary conditions
+
+%subtract the filtered image from the orginal image; 
+Diff = (double(Image)-double(ImageFilt));
+%everything below could be done in double; but we want to keep standard 8-bit
+%images and have to shift the difference; this can be obtained with 1D histogramm:  
+[Hist, Vals] = hist(Diff(:));
+Diff = uint8(Diff-Vals(1));
+
+%Use Diff for segmentation
+\end{lstlisting}
+
+\subsection{Beschreibung der ROIs (Region of interest)}
+Eine genaue Beschreibung der ROI-Methode ist im Skript auf Seite 67 zu finden.\\
+Für das Finden der Region of Intrest gibt es hauptsächlich zwei Methoden:
+\begin{description}
+    \item[Region Labeling] Beim Region Labeling wird das Ganze Bild iteriert und jedes Objekt mit einem Index versehen. Falls ein Nachbarpixel bereits einen Index enthält, wird dieser übernommen, ansonsten um 1 erhöht. Am Schluss wird nochmals iteriert um allfällige Detektionsfehler zu finden.
+    \item[Kettencodes] ToDo
+\end{description}
+\begin{lstlisting}
+%do labeling (use 8 neighbors, the default)
+[LabelImage, NumberLabels] = bwlabel(Image);
+\end{lstlisting}
+
+\section{Merkmalsextraktion}
+Die Merkmale von ROIs können mit der Matlab Funktion \lstinline|regionprops()| extrahiert werden.\\
+Die zugrundeliegende Mathematik ist im Skript auf Seite 70 ff. aufzufinden.
+\begin{lstlisting}
+%do feature extraction 
+Prop = regionprops(LabelImage,'Area','Centroid', 'Orientation', 'BoundingBox', 'ConvexHull');
+%the result is the structure array Prop, with NumLabels x 1 entries
+\end{lstlisting}
+

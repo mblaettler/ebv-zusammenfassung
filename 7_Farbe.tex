@@ -1,0 +1,47 @@
+\section{Farbe}
+\subsection{Farbräume}
+Farben können in verschiedenen Farbräumen dargestellt werden. Dabei unterscheidet man hauptsächlich zwischen Additiven und Substraktiven Farbräumen.
+\subsubsection{RGB}
+Der RGB (Rot, Grün, Blau) Farbraum ist ein additiver Farbraum in welchem durch Mischen der Farben Rot, Grün und Blau (fast) jede beliebige Farbe erzeugt werden kann.\\
+Der RGB-Farbraum wird hauptsächlich zur Bildaufnahme und Wiedergabe an LCD/LED-Monitoren verwendet. Matlab speichert die Farbwerte in einem 3x255-Array.
+\begin{lstlisting}
+%do a three 3 representation
+%extract color planes
+Red = Image(:,:,1);
+Green = Image(:,:,2);
+Blue = Image(:,:,3);
+\end{lstlisting}
+
+\subsubsection{CMY}
+Für nichtstrahlende Oberflächen können keine additiven Farbräume verwendet werden, da diese selbst keine Wellen aussenden sondern diese nur absorbieren. Dafür werden Cyan, Magenta, Yellow als Filterfarben verwendet.\\
+Dieser Farbraum spielt vor allem in der Drucktechnik eine grosse Rolle. Da aber durch die Mischung kein tiefes Schwarz erreicht werden kann, wird als vierte Farbe noch Schwarz hinzugenommen.\\
+Die Umwandlung von RGB zu CMYK
+\begin{equation}
+\begin{bmatrix}
+C\\
+M\\
+Y
+\end{bmatrix} =
+\begin{bmatrix}
+1\\
+1\\
+1
+\end{bmatrix} - 
+\begin{bmatrix}
+R\\
+G\\
+B
+\end{bmatrix}
+\end{equation}
+
+\subsubsection{YCbCr}
+Ein weiterer Farbraum ist der YCbCr Farbraum. Dieser hat, nebst vielen anderen Farbräumen die Eigenschaft die Luminanz- (Helligkeits-) von der Chrominanz- (Farb-) Werten zu trennen. (Formel zur Berechnung auf Skript S. 92)
+\begin{lstlisting}
+%transform to YCbCr space
+ImageYCbCr = rgb2ycbcr(Image);
+
+%extract color planes
+Y = ImageYCbCr(:,:,1);
+Cb = ImageYCbCr(:,:,2);
+Cr = ImageYCbCr(:,:,3);
+\end{lstlisting}
