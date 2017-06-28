@@ -31,8 +31,14 @@ ImageErode = imerode(Image, StrucElem);
 
 \subsection{Schliessung und Öffnung}
 \begin{description}
-    \item[Schliessung] Dilatation und Erosion
+    \item[Schliessung] Dilatation und Erosion\\
+\begin{lstlisting}
+ImageClose = imclose(Image, StrucElem);
+\end{lstlisting}
     \item[Öffnung] Erosion und Dilatation
+\begin{lstlisting}
+ImageOpen = imopen(Image, StrucElem);
+\end{lstlisting}
 \end{description}
 
 \subsection{Hit- und Miss-Operation}
