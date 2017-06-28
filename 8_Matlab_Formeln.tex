@@ -1,0 +1,23 @@
+\section{Matlab Befehle}
+\subsection{Code}
+\begin{lstlisting}
+%255 --> weiss 
+%0 	--> schwarz
+
+%open Image
+Image = imread('Image.jpg'); 
+
+%RGB to YCbCr
+ImageYCbCr= rgb2ycbcr(ImageRGB);
+
+%subplot 2 hoch 3 breit
+figure(1);
+subplot(2,3,1);
+title('Titel Von Dem Bild'); 
+imshow(im1);
+subplot(2,3,2);
+imshow(im2);
+\end{lstlisting}
+
+\subsection{Logical Operations}
+\includegraphics[width=\textwidth/3]{logic_operations.png}
