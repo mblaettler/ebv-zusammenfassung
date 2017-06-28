@@ -102,5 +102,32 @@ Die zugrundeliegende Mathematik ist im Skript auf Seite 70 ff. aufzufinden.
 %do feature extraction 
 Prop = regionprops(LabelImage,'Area','Centroid', 'Orientation', 'BoundingBox', 'ConvexHull');
 %the result is the structure array Prop, with NumLabels x 1 entries
+
+%plot bounding box
+for Ind=1:size(Prop,1)
+    BBox = Prop(Ind).BoundingBox;
+    rectangle('Position', BBox, 'EdgeColor',[0 1 0]);
+end
+
+%plot center
+for Ind=1:size(Prop,1)
+    Cent=Prop(Ind).Centroid;
+    X=Cent(1);Y=Cent(2);
+    %make a cross
+    line([X-0.5 X+0.5], [Y Y],'LineWidth',1,'Color',[1 0 0]);
+    line([X X], [Y-0.5 Y+0.5],'LineWidth',1,'Color',[1 0 0]);
+end
+
+%plot orientation with text
+for Ind=1:size(Prop,1)
+    Orient = Prop(Ind).Orientation;
+    %draw a line through the centroid with given orientation
+    Len = sqrt(Prop(Ind).Area);
+    Shift = Len*exp(-i*pi*Orient/180);
+    line([X-real(Shift) X+real(Shift)], [Y-imag(Shift) Y+imag(Shift)], 'Color', [0 1 0]);
+    text(X-1,Y+2, sprintf('%2.2f', Orient), 'BackgroundColor',[.8 .8 .8]);
+end
+
+%more plotting uebung06/MerkmalsExtraktion.tex
 \end{lstlisting}
 
