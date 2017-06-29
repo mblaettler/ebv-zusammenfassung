@@ -28,6 +28,7 @@ Der optionale Schwellwert ist nun:
 K_{opt}=argmin(\sigma_W)
 \end{equation}
 \begin{lstlisting}
+%u6 OwnOtsu
 %determine image histogram
 [Hist, Vals]=imhist(Image);
 %normalize it
@@ -66,6 +67,7 @@ BW = imbinarize(I,T);
 Das Otsu Verfahren funktioniert aber nur, wenn ein globaler (d.h. für das gesamte Bild konstanter) Schwellwert existiert.\\
 Falls dies nicht der Fall sein sollte, gibt es eine Möglichkeit vor der Segmentierung die Grundhelligkeit des Bildes zu extrahieren und vom Originalbild zu subtrahieren.
 \begin{lstlisting}
+%u5 Substrakt_Otsu
 %apply a smoothing filter (we have to know the approximate size of
 %forground objects)
 Mask = fspecial('gaussian', 40, 25);
@@ -99,6 +101,7 @@ Für das Finden der Region of Intrest gibt es hauptsächlich zwei Methoden:
 Die Merkmale von ROIs können mit der Matlab Funktion \lstinline|regionprops()| extrahiert werden.\\
 Die zugrundeliegende Mathematik ist im Skript auf Seite 70 ff. aufzufinden.
 \begin{lstlisting}
+%u6 MerkmalsExtraktion
 %do feature extraction 
 Prop = regionprops(LabelImage,'Area','Centroid', 'Orientation', 'BoundingBox', 'ConvexHull');
 %the result is the structure array Prop, with NumLabels x 1 entries
@@ -128,6 +131,6 @@ for Ind=1:size(Prop,1)
     text(X-1,Y+2, sprintf('%2.2f', Orient), 'BackgroundColor',[.8 .8 .8]);
 end
 
-%more plotting uebung06/MerkmalsExtraktion.tex
+%more plotting uebung06/MerkmalsExtraktion.m
 \end{lstlisting}
 

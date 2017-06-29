@@ -22,6 +22,7 @@ Die Schritte des Canny-Algorithmus:
     Dies ermöglicht eine gute Reaktion auf Kontrastschwankungen.
 \end{enumerate}
 \begin{lstlisting}
+%u7 GradientCanny
 %upper and lower threshold for edge detection (relative to max gradient
 %value)
 Threshold = [0.0 0.05];
@@ -34,6 +35,7 @@ Sigma = 1;
 \subsection{Hough-Transformation}
 Einen Punkt/Linie kann auch durch einen Winkel und einen Betrag beschrieben werden (siehe Vektoren, komplexe Zahlen). Bei der Hugh-Transformation wird beim differenzierten Bild jeder Pixel über einen Winkel und Betrag beschrieben. So können zusammenhängende Punkte/Linien ermittelt werden.
 \begin{lstlisting}
+%u7 HoughTrans
 % Detect the edges, the result is a binary image
 EdgeCanny = edge(Image, 'canny', [0 0.1], 1);
 

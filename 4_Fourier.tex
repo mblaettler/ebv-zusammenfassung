@@ -10,6 +10,7 @@ Definition und Rechenregeln: Skript S. 53.
 \subsection{2D Diskrete Fourier Transformation (DFT)}
 Die zweidimensionale DFT ist das Produkt der beiden eindimensionalen DFTs.
 \begin{lstlisting}
+%u5 DFT_Rechteck
 %this is the image size
 SizeXImage = 150;
 SizeYImage = 150;
@@ -22,6 +23,7 @@ Image_FFT = fft2(Image, SizeFFT, SizeFFT);
 
 \subsubsection{Berechnen der Inversen 2D DFT}
 \begin{lstlisting}
+%u5 INVDFT_Rechteck
 %caluclate the inverse fft an plot
 Inv_FFT = abs(ifft2(Image_FFT_Mask));
 \end{lstlisting}
@@ -37,6 +39,7 @@ Die einfachste Möglichkeit bietet die Anwendung einer Fensterfunktion (engl. Wi
 w_n=\frac{1}{2}*(1-\cos{\frac{2*\pi *n}{N-1}})
 \end{equation}
 \begin{lstlisting}
+%u5 DFT_Periodisch_Rect
 %apply Hanning window
 Hann = hann(ImgS(1))*hann(ImgS(2))';
 Image_FFT_Ham = fft2(double(Image).*Hann);
@@ -45,6 +48,7 @@ Image_FFT_Ham = fft2(double(Image).*Hann);
 \subsection{Unterdrückung periodischer Strukturen}
 Periodische Strukturen/Störungen können in einem Bild durch ein \textbf{Notch-Filter} eliminiert werden.
 \begin{lstlisting}
+%u5 DFT_Notch
 %use imtool to find the positions of the frequencies
 %%imtool(log(abs(fftshift(Image_FFT))),[0 log(sum(MaxVal))]);
 NotchPos = [107 102; 95 143;116 170; 151 160; 165 114; 143 90; 185 140; 70 118];
@@ -64,6 +68,7 @@ ImageFilt = ImageIfft(1:ImgS(1), 1:ImgS(2));
 \subsection{Alisaing}
 Aliasing Artefakte werden häufig durch das Dezimieren (engl. Downsampling) von periodischen Strukturen erzeugt. Durch einen Glättungsfilter können diese stark reduziert werden.
 \begin{lstlisting}
+%u5 Aliasing
 DownSampling = 5;   % Downsampling-Faktor
 
 %apply anti aliasing filter

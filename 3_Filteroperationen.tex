@@ -29,6 +29,7 @@ oder $G=\frac{1}{16}*\begin{bmatrix}
 1 & 2 & 1
 \end{bmatrix}$
 \begin{lstlisting}
+%u3 Glaettung
 %apply a filter of size 2x2
 R = 1/4*[1 1; 1 1];
 Image1 = uint8(imfilter(double(Image), R));
@@ -77,6 +78,7 @@ h_y = \begin{bmatrix}
 \end{bmatrix}
 \end{equation*}
 \begin{lstlisting}
+%u3 Gradient1
 % Prewitt Filter
 DX = [-1 0 1; -1 0 1; -1 0 1];
 DY = DX';	
@@ -86,6 +88,7 @@ ImageDy = imfilter(Image, DY);
 \end{lstlisting}
 oder mit den Matlab Funktionen:
 \begin{lstlisting}
+%u3 Gradient2
 %choose the filters
 DX = fspecial('sobel')';
 DY = fspecial('sobel');
@@ -102,6 +105,7 @@ Durch Trigonometrie kann die Richtung/Winkel der Steigung evaluiert werden.
 \alpha = \arctan{\frac{\frac{\partial I}{\partial y}}{\frac{\partial I}{\partial x}}}
 \end{equation}
 \begin{lstlisting}
+%u3 Gradient2
 %determine the angle
 %(atan2 gives back the whole interval
 %]-pi , pi[ )
@@ -122,6 +126,7 @@ In der Bildverarbeitung wird der Laplace Operator wie folgt eingesetzt:
 \end{equation}
 Wobei der Term $1*I$ benötigt wird, damit das Bild in die Berechnung hineingezogen wird (L alleine detektiert nur die Kanten). Der Faktor $\beta$ beschreibt wie stark das Bild geschärft werden soll.
 \begin{lstlisting}
+%u3 Bildschaerfung
 %define the filter
 Beta = 0.5;
 Mask = [0 0 0; 0 1 0; 0 0 0] + Beta*[0 -1 0; -1 4 -1; 0 -1 0]
@@ -134,11 +139,13 @@ ImageEnh = imfilter(Image, Mask);
 Der Median-Filter hilft beim entfernen von Bildstörungen oder beim finden von lokalen Maximas und Minimas.
 \includegraphics[width=\textwidth/3]{medianfilter.PNG}
 \begin{lstlisting}
+%u4 MedianFilter
 % 5 means take the 5th element in the value order
 ImageMedian = ordfilt2(ImageNoise, 5, ones(3,3));
 \end{lstlisting}
 \subsubsection{Minimas und Maximas}
 \begin{lstlisting}
+%u4 LocalMaxMin
 %apply min/max filter
 MinVal = ordfilt2(ImgValley, 1, ones(SizeRegion));
 MaxVal = ordfilt2(ImgHill, SizeRegion^2, ones(SizeRegion));

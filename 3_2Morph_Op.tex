@@ -14,9 +14,10 @@ Für alle morphologischen Operationen ist ein Strukturelement (mit Referenz) nö
 Matlab kennt die \lstinline{strel} Funktion um häufige Strukturelemente zu erzeugen.
 
 \subsection{Dilatation}
-Bei der Dilatation wird das Strukturelement über das Bild geschoben. Dabei werden alle Referenzpixel eingefärbt, bei welchen das Strukturelement noch ein Pixel des ursprünglichen Bilds berührt.
+Bei der Dilatation wird das Strukturelement über das Bild geschoben. Dabei werden alle Referenzpixel eingefärbt, bei welchen das Strukturelement noch ein Pixel des ursprünglichen Bilds berührt.\\
 Das Strukturelement wird einmal an der X-Achse und einmal an der Y-Achse gespiegelt.
 \begin{lstlisting}
+%u4 Morphologie
 %do a dilation 
 ImageDil = imdilate(Image, StrucElem);
 \end{lstlisting}
@@ -24,6 +25,7 @@ ImageDil = imdilate(Image, StrucElem);
 \subsection{Erosion}
 Bei der Erosion werden nur diese Referenzpixel erhalten, bei welcher das Strukturelement komplett in die Struktur passt.
 \begin{lstlisting}
+%u4 Morphologie
 %do an erosion 
 ImageErode = imerode(Image, StrucElem);
 \end{lstlisting}
@@ -34,10 +36,12 @@ ImageErode = imerode(Image, StrucElem);
 \begin{description}
     \item[Schliessung] Dilatation und Erosion\\
 \begin{lstlisting}
+%u4 Morphologie1
 ImageClose = imclose(Image, StrucElem);
 \end{lstlisting}
     \item[Öffnung] Erosion und Dilatation
 \begin{lstlisting}
+%u4 Morphologie1
 ImageOpen = imopen(Image, StrucElem);
 \end{lstlisting}
 \end{description}
