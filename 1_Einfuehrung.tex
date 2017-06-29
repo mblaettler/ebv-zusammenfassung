@@ -1,0 +1,21 @@
+\section{Einführung}
+\subsection{Sensoren}
+\begin{description}
+    \item[CCD] Beim CCD-Sensor wird der photoelektrische Effekt ausgenutzt. Dabei wird bei Wellenlängen über 1'100 nm (IR) Elektronen-Lochpaare erzeugt. Die Anzahl dieser Paare ist proportional zur Intensität des einfallenden Lichtes. Dies wird vom CCD-Sensor in elektrische Spannung umgewandelt.\\
+    Um die Daten auszulesen, werden diese aus dem Sensor herausgeschoben (Siehe Abbildung 13 im Skript S. 9). Dies nennt sich das ''Eimerkettenprinzip''.
+    \item[CMOS] Der CMOS Sensor funktioniert grundsätzlich identisch wie der CCD-Sensor. Beim CMOS-Sensor hat jedoch jedes Pixel einen eigenen Verstärker samt Auswertungslogik. Der hohe Platzbedarf sowie das hohe Pixelrauschen sprachen lange gegen die CMOS Sensoren, obwohl diese sonst viel Vorteile haben. So haben diese einen geringeren Stromverbrauch, kleineres Übersprechen bei hohen Belichtungsstärken (Blooming-Effekt) und durch den Einsatz eines separaten Verstärkers für jedes Pixel besteht die Möglichkeiten einer logarithmischen Messung der Belichtungsstärke.
+\end{description}
+\subsection{Rasterung}
+Die Rasterung oder räumliche Auflösung ist ein Mass für die Detailtreue eines Bildes.\\
+Zwischen der Gegenstands- (g), Bildweite (b) und Brennweite (f) besteht folgender Zusammenhang:
+\begin{equation}
+\frac{1}{g} + \frac{1}{b} = \frac{1}{f}
+\end{equation}
+\begin{equation}
+b=\frac{f\cdot g}{g - f}
+\end{equation}
+Weiterhin folgt aus dem Strahlensatz der direkte Zusammenhang zwischen Gegenstands- (G) und Buildgrösse (B).
+\begin{equation}
+\frac{B}{G}=\frac{b}{g}
+\end{equation}
+Beispielrechnung Skript S.14.
