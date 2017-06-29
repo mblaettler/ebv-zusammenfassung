@@ -15,6 +15,7 @@ Matlab kennt die \lstinline{strel} Funktion um häufige Strukturelemente zu erze
 
 \subsection{Dilatation}
 Bei der Dilatation wird das Strukturelement über das Bild geschoben. Dabei werden alle Referenzpixel eingefärbt, bei welchen das Strukturelement noch ein Pixel des ursprünglichen Bilds berührt.
+Das Strukturelement wird einmal an der X-Achse und einmal an der Y-Achse gespiegelt.
 \begin{lstlisting}
 %do a dilation 
 ImageDil = imdilate(Image, StrucElem);

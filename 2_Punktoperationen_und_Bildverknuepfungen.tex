@@ -14,10 +14,12 @@ Es wird grundsätzlich zwischen zwei verschiedenen Arten unterschieden:
 Beispiele sind: \textbf{Spreizung} und \textbf{inverses Bild}\\
 Für lineare Transformationen werden oft LUT (Look up tables) verwendet.
 \begin{lstlisting}
+% u2 Beispile_LUT / Gamma / ...
 %LUT for inverse image
 LUT_Inv = uint8([255:-1:0]);
 
-% LUT for spreading (Spreizung)
+% u2 Spreizung
+% LUT for spreading (Spreizung) 
 LUT_Spread = uint8(((0:255)-50) * 2);
 
 %apply LUT
@@ -32,6 +34,7 @@ Die Gammakorrektur ist eine häufig verwendete Korrekturfunktion zur Überführu
 Der Histogrammausgleich versucht den zur Verfügung stehenden Grauwertbereich optimal auszunutzen. Dabei sollte jeder Grauwert gleichmässig auftreten.
 \includegraphics[width=\textwidth/3]{histogrammausgleich.PNG}
 \begin{lstlisting}
+% u2 Histogramm_Ausgleich
 [Hist, Val] = imhist(Image);
 
 CumHist = cumsum(Hist)/sum(Hist);
@@ -48,7 +51,9 @@ ImageEqu = intlut(Image, LUT_Equ);
 
 \subsection{Motiondetektion durch Differenzbildung}
 Durch Substraktion von zwei Bildern kann die Veränderung zwischen den Bildsequenzen erkennt werden.
+%TODO konnte Code nicht finden. 
 \begin{lstlisting}
+% u2 GleitendesMittel   
 %this is the delta of the step
 Delta = 2;
 
@@ -91,6 +96,7 @@ Um zu Berechnen wie viele Integrationen (Bilder) es benötigt, bis stationäre �
     n=\frac{\log(0.1)}{\log(\alpha)}
 \end{equation}
 \begin{lstlisting}
+% u2 GleitendesMittel
     %estimate new background as sliding average
     BackGround =  uint8(alpha*double(BackGround) +(1-alpha)*double(ImageAct));
 \end{lstlisting}

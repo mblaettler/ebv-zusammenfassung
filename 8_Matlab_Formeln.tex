@@ -17,7 +17,16 @@ title('Titel Von Dem Bild');
 imshow(im1);
 subplot(2,3,2);
 imshow(im2);
+
+%AND
+StGruen = ((110 > Cr) & (100 < Cr )) * 255;
+
+%kind of NOT
+%Replace all values in A that are not equal to 10 with a NaN value.
+A(A~=10) = NaN;
+
+%OR
+(A | B)
 \end{lstlisting}
 
-\subsection{Logical Operations}
-\includegraphics[width=\textwidth/3]{logic_operations.png}
+
